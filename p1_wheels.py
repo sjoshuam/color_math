@@ -107,40 +107,13 @@ def draw_color_wheel(trace_dict, wheel):
         )
     return trace_dict
 
-##########==========##########==========##########==========##########==========##########==========
-## draw polar figures
 
-
-def make_grid_figure():
-    """
-        TODO
-    """
-    fig = go.Figure()
-    fig = fig.update_layout(
-        width = params['width'], height = params['height'],
-        showlegend = False
-        )
-    return fig
-
-
-def draw_grid(trace_dict, grid):
-    """
-        TODO
-    """
-    print(grid)
-
-
-
-##########==========##########==========##########==========##########==========##########==========
-## execute functions in sequence and write result to disk
-
-
-def write_color_wheel(wheel_type = 'h'):
+def write_color_wheel(wheel_type:str, sv:str) -> None:
     """
         TODO
     """
     ## value write 
-    wheel = make_wheel(which = wheel_type)
+    wheel = make_wheel(which=wheel_type, sv=sv)
     fig = make_polar_figure()
     trace_dict = dict()
     trace_dict = draw_color_wheel(trace_dict = trace_dict, wheel = wheel)
@@ -149,6 +122,19 @@ def write_color_wheel(wheel_type = 'h'):
         os.path.join('io_mid', wheel_type + '.html'), full_html = True, include_plotlyjs = True)
     fig.write_html(
         os.path.join('io_mid', wheel_type + '.div'), full_html = False, include_plotlyjs = False)
+    return None
+
+
+##########==========##########==========##########==========##########==========##########==========
+## Execute all other functions in sequence
+
+def make_wheels():
+    """TODO
+    """
+    write_color_wheel(wheel_type='HUE', sv=1)
+    write_color_wheel(wheel_type='HUExSAT', sv=4)
+    write_color_wheel(wheel_type='HUExVAL', sv=6)
+    return None
 
 
 ##########==========##########==========##########==========##########==========##########==========
@@ -156,11 +142,7 @@ def write_color_wheel(wheel_type = 'h'):
 
 
 if __name__ == '__main__':
-    write_color_wheel(wheel_type = 'HUE')
-    write_color_wheel(wheel_type = 'HUExSAT')
-    write_color_wheel(wheel_type = 'HUExVAL')
-    grid = make_grid()
-    draw_grid(grid = grid, trace_dict = dict())
+    make_wheels()
 
 
 ##########==========##########==========##########==========##########==========##########==========

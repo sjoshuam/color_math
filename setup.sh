@@ -19,6 +19,10 @@ echo ".*
 io_mid/*
 __pycache__" > .gitignore
 
+## populate directory with essential files
+echo '# color_math: Understanding HSV Coordinates' > README.md
+cp ~/code/roadtrips/LICENSE.md ~/code/color_math/LICENSE.md
+
 ## commit directory and upload to github
 git init
 git add -A
