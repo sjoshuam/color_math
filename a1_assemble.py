@@ -5,7 +5,7 @@
 ## HEADER
 
 import shutil, os
-from p1_wheels import make_wheels
+from b1_wheels import make_wheels
 
 params = dict(
     refresh_wheels = True
@@ -56,6 +56,7 @@ def execute_project(params=params):
     html = inject_div(id = 'HUE', html = html, div_class = 'visual' )
     html = inject_div(id = 'HUExSAT', html = html, div_class = 'visual'  )
     html = inject_div(id = 'HUExVAL', html = html, div_class = 'visual')
+    html = inject_div(id = 'SATxVAL', html = html, div_class = 'visual')
     export_html(html)
 
 

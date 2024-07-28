@@ -133,7 +133,7 @@ def make_wheels():
     """
     write_color_wheel(wheel_type='HUE', sv=1)
     write_color_wheel(wheel_type='HUExSAT', sv=4)
-    write_color_wheel(wheel_type='HUExVAL', sv=6)
+    write_color_wheel(wheel_type='HUExVAL', sv=4)
     return None
 
 
