@@ -1,6 +1,6 @@
 # color_math: Understanding HSV Coordinates
 
-Screen colors are mixtures of Red, Green, and Blue (RGB) light. However, RGB mixtures do not map well to the intuitive way people perceive colors. The HSV system translates RGB mixtures to match perception. These reference charts illustrate the HSV Color system components: Hue, Saturation, and Vibrancy. The charts server two purposes. First, they are a quick reference for me when discusses visualization color palettes. Second, they are a basic educational tool for interest colleagues who aren't familiar with the mechanics of on-screen color.
+Screen colors are mixtures of Red, Green, and Blue (RGB) light. However, RGB mixtures do not map well to the intuitive way people perceive colors. The HSV system translates RGB mixtures to match perception. These reference charts illustrate the HSV Color system components: Hue, Saturation, and Vibrancy. The charts serve two purposes. First, they are a quick reference for me when discussing visualization color palettes. Second, they are a basic educational tool for interest colleagues who aren't familiar with the mechanics of on-screen color.
 
 ## Key files
 
