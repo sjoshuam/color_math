@@ -34,7 +34,7 @@ def make_hue_grid(hue=210, params=params) -> pd.DataFrame:
     val = pd.Series(data=[i / (val_n-1) for i in range(0, val_n)], name='val')
     hue_grid = pd.DataFrame(val).merge(sat, how = 'cross')
     hue_grid['hue'] = hue
-    hue_grid['color'] = 'hsv(' + hue_grid['hue'].round(2).astype(str) + ','
+    hue_grid['color'] = 'hsv(' + hue_grid['hue'].astype(str).str.zfill(3) + ','
     hue_grid['color'] += hue_grid['sat'].round(2).astype(str) + ','
     hue_grid['color'] += hue_grid['val'].round(2).astype(str) + ')'
     del hue, sat, val
@@ -54,7 +54,7 @@ def make_hue_grid(hue=210, params=params) -> pd.DataFrame:
     return hue_grid
 
 
-def make_hue_traces(traces:dict, hue_grid:pd.DataFrame) -> dict:
+def make_hue_traces(traces:dict, hue_grid:pd.DataFrame, visible=False) -> dict:
     """ Converts hue_grid data into plotly traces
     Inputs: hue_grid = output from make_hue_grid().  Coordinates and colors needed to draw grid.
     """
@@ -70,27 +70,57 @@ def make_hue_traces(traces:dict, hue_grid:pd.DataFrame) -> dict:
             text=color_iter,
             name='',
             hovertemplate="%{text}<extra></extra>",
-            mode='none',
-            line = dict(color='hsv(0,0,0)', width=2),
-            textposition='middle center'
+            mode='lines',
+            line = dict(color='hsv(0,0,0.5)', width=1),
+            textposition='middle center',
+            visible = visible
         )
 
     return traces
 
 
-def write_figure(hue_traces:list[dict], params=params) -> None:
+def make_slider(hue_traces:dict) -> list:
+    """Make a slider bar to control the hue of the SATxVAL figure"""
+
+    ## package visibility information in step format
+    visible = list()
+    for iter in range(0,12):
+        iter_hue = 'hsv(' + str(iter*30).zfill(3)
+        visible.append(
+            dict(method= 'update', label = str(iter*30)+'°',
+            args = [dict(visible=[i.startswith(iter_hue) for i in hue_traces.keys()])]
+            ))
+
+    ## package visibility information in slider format
+    slider = [dict(
+        font = dict(size = 10, color = 'hsv(0,0,0)'),
+        currentvalue=dict(font = dict(size = 12), prefix='Hue: '),
+        active = 11, steps = visible, pad = dict(b=0, l=8, r=8, t=0)
+        )]
+    return slider
+
+
+def write_figure(hue_traces:dict, slider:list[dict], params=params) -> None:
     """Incorporate plotly traces intoa figure object and write to disk"""
 
+    axis_ticktext = [i / (params['num_colors']-1) for i in range(0, params['num_colors'])]
+    axis_tickvals = [i + 0.5 / (params['num_colors']-1) for i in axis_ticktext]
+    axis_ticktext = [str(round(i,2)) for i in axis_ticktext]
+
     ## make plotly figure object
+    space = '<br>'*0
     max_range = params['num_colors'] / (params['num_colors']-1)
     fig = go.Figure()
     fig = fig.update_layout(
         width=500-5, height=500-5,
         showlegend=False,
         plot_bgcolor='hsv(0,0,1)',
-        margin=dict(r=20,l=20, t=20, b=20), dragmode=False,
-        xaxis=dict(visible=False, range=[-0.01,max_range+0.01]),
-        yaxis=dict(visible=False, range=[-0.01,max_range+0.01])
+        margin=dict(r=0,l=0, t=00, b=0), dragmode=False,
+        xaxis=dict(visible=True, range=[-0.01,max_range+0.01], title=space+'--- Vibrancy -->',
+                   tickvals=axis_tickvals, ticktext=axis_ticktext, side='top'),
+        yaxis=dict(visible=True, range=[-0.01,max_range+0.01], title=space+'<-- Saturation ---',
+                   tickvals=axis_tickvals, ticktext=axis_ticktext),
+        sliders=slider
     )
 
     ##
@@ -107,10 +137,14 @@ def write_figure(hue_traces:list[dict], params=params) -> None:
 
 def generate_hue_grid() -> None:
     """TODO"""
-    hue_grid = make_hue_grid()
+
     hue_traces = dict()
-    hue_traces = make_hue_traces(traces=hue_traces, hue_grid=hue_grid)
-    write_figure(hue_traces=hue_traces)
+    for i in range(0, 12):
+        hue_grid = make_hue_grid(hue=i*30)
+        hue_grid.to_excel('~/Desktop/'+str(i)+'.xlsx')
+        hue_traces = make_hue_traces(traces=hue_traces, hue_grid=hue_grid, visible=i==11)
+    slider = make_slider(hue_traces)
+    write_figure(hue_traces=hue_traces, slider=slider)
     return None
 
 
